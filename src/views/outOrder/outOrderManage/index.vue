@@ -23,8 +23,7 @@
           value-format="yyyy-MM-dd HH:mm:ss"
           unlink-panels
           :picker-options="pickerOptions"
-        >
-        </el-date-picker>
+        />
         <label class="el-form-item-label">仓库</label>
         <el-select
           v-model="query.warehouseId"
@@ -50,8 +49,7 @@
           type="primary"
           icon="el-icon-plus"
           @click="showAddDialog('paper')"
-          >新建黄板纸出库单</el-button
-        >
+        >新建黄板纸出库单</el-button>
         <el-button
           slot="left"
           class="filter-item"
@@ -59,8 +57,7 @@
           type="primary"
           icon="el-icon-plus"
           @click="showAddDialog('other')"
-          >新建非黄板纸出库单</el-button
-        >
+        >新建非黄板纸出库单</el-button>
       </crudOperation>
       <!--表单组件-->
       <el-dialog
@@ -99,8 +96,7 @@
             :loading="crud.status.cu === 2"
             type="primary"
             @click="crud.submitCU"
-            >确认</el-button
-          >
+          >确认</el-button>
         </div>
       </el-dialog>
       <!--表格渲染-->
@@ -110,27 +106,35 @@
         :data="crud.data"
         size="small"
         style="width: 100%;"
-        :maxHeight="$store.state.settings.maxTableHeight"
+        :max-height="$store.state.settings.maxTableHeight"
         @selection-change="crud.selectionChangeHandler"
       >
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="出库单号" />
         <el-table-column prop="buyerId" label="采购商">
-          <template slot-scope="scope"
-            >{{ scope.row.buyer.name }}
+          <template
+            slot-scope="scope"
+          >{{ scope.row.buyer.name }}
           </template>
         </el-table-column>
         <el-table-column prop="carrierId" label="承运商">
-          <template slot-scope="scope"
-            >{{ scope.row.carrier.name }}
+          <template
+            slot-scope="scope"
+          >{{ scope.row.carrier.name }}
           </template>
         </el-table-column>
         <el-table-column prop="warehouseId" label="仓库">
-          <template slot-scope="scope"
-            >{{ scope.row.warehouse.name }}
+          <template
+            slot-scope="scope"
+          >{{ scope.row.warehouse.name }}
           </template>
         </el-table-column>
         <el-table-column prop="stockOutTime" label="出库时间" />
+        <el-table-column label="物料明细" width="150px">
+          <template slot-scope="scope">
+            {{ getOrderDetail( scope.row) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="createBy" label="制单人" />
         <el-table-column prop="createTime" label="制单时间" />
         <el-table-column
@@ -141,7 +145,7 @@
         >
           <template slot-scope="scope">
             <udOperation
-              disabledEdit
+              disabled-edit
               :data="scope.row"
               :permission="permission"
             >
@@ -149,8 +153,7 @@
                 size="mini"
                 type="primary"
                 @click="showDetailDialog(scope.row)"
-                >详情</el-button
-              >
+              >详情</el-button>
             </udOperation>
           </template>
         </el-table-column>
@@ -159,21 +162,21 @@
       <pagination />
     </div>
 
-    <detailDialog ref="detailDialog"></detailDialog>
-    <addDialog ref="addDialog"></addDialog>
+    <detailDialog ref="detailDialog" />
+    <addDialog ref="addDialog" />
   </div>
 </template>
 
 <script>
-import crudStockOutOrder from "@/api/outOrder/outOrderManage";
-import CRUD, { presenter, header, form, crud } from "@crud/crud";
-import rrOperation from "@crud/RR.operation";
-import crudOperation from "@crud/CRUD.operation";
-import udOperation from "@crud/UD.operation";
-import pagination from "@crud/Pagination";
-import detailDialog from "./detailDialog";
-import addDialog from "./addDialog";
-import { queryWarehouse } from "@/api/common";
+import crudStockOutOrder from '@/api/outOrder/outOrderManage'
+import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import rrOperation from '@crud/RR.operation'
+import crudOperation from '@crud/CRUD.operation'
+import udOperation from '@crud/UD.operation'
+import pagination from '@crud/Pagination'
+import detailDialog from './detailDialog'
+import addDialog from './addDialog'
+import { queryWarehouse } from '@/api/common'
 const defaultForm = {
   id: null,
   buyerId: null,
@@ -185,9 +188,9 @@ const defaultForm = {
   updateBy: null,
   updateTime: null,
   deleted: null
-};
+}
 export default {
-  name: "StockOutOrder",
+  name: 'StockOutOrder',
   components: {
     pagination,
     crudOperation,
@@ -198,73 +201,84 @@ export default {
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    let optShow = {
+    const optShow = {
       add: false,
       edit: false,
       del: true,
       download: true,
       reset: true
-    };
+    }
     return CRUD({
       optShow,
-      title: "出库单",
-      url: "api/stockOutOrder",
-      idField: "id",
-      sort: "id,desc",
+      title: '出库单',
+      url: 'api/stockOutOrder',
+      idField: 'id',
+      sort: 'id,desc',
       crudMethod: { ...crudStockOutOrder }
-    });
+    })
   },
   data() {
     return {
       warehouseList: [],
       pickerOptions: this.$store.state.settings.defaultPickerOptions,
       permission: {
-        add: ["admin", "stockOutOrder:add"],
-        edit: ["admin", "stockOutOrder:edit"],
-        del: ["admin", "stockOutOrder:del"]
+        add: ['admin', 'stockOutOrder:add'],
+        edit: ['admin', 'stockOutOrder:edit'],
+        del: ['admin', 'stockOutOrder:del']
       },
       rules: {
         buyerId: [
-          { required: true, message: "采购商不能为空", trigger: "blur" }
+          { required: true, message: '采购商不能为空', trigger: 'blur' }
         ],
         carrierId: [
-          { required: true, message: "承运商不能为空", trigger: "blur" }
+          { required: true, message: '承运商不能为空', trigger: 'blur' }
         ],
         warehouseId: [
-          { required: true, message: "仓库不能为空", trigger: "blur" }
+          { required: true, message: '仓库不能为空', trigger: 'blur' }
         ],
         stockOutTime: [
-          { required: true, message: "出库时间不能为空", trigger: "blur" }
+          { required: true, message: '出库时间不能为空', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
-        { key: "id", display_name: "出库单号" },
-        { key: "warehouseId", display_name: "仓库" }
+        { key: 'id', display_name: '出库单号' },
+        { key: 'warehouseId', display_name: '仓库' }
       ]
-    };
+    }
   },
   mounted() {
-    let params = {
+    const params = {
       page: 0,
       size: 100
-    };
+    }
     queryWarehouse(params).then(res => {
-      this.warehouseList = res.content || [];
-    });
+      this.warehouseList = res.content || []
+    })
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
-      return true;
+      return true
     },
     showDetailDialog(data = {}) {
-      this.$refs.detailDialog.showDialog(data);
+      this.$refs.detailDialog.showDialog(data)
     },
-    showAddDialog(mode = "paper") {
-      this.$refs.addDialog.showDialog(mode);
+    showAddDialog(mode = 'paper') {
+      this.$refs.addDialog.showDialog(mode)
+    },
+    getOrderDetail(data = {}) {
+      let str = '';
+      (data.orderItems || []).forEach((item, index) => {
+        let temp = item.material.name + '-' + item.quantity
+        if (index < data.orderItems.length - 1) {
+          temp += ','
+        }
+        str += temp + '\n'
+      })
+      return str
     }
   }
-};
+}
 </script>
 
 <style scoped></style>

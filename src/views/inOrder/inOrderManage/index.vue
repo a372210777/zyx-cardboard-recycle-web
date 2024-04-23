@@ -23,8 +23,7 @@
           value-format="yyyy-MM-dd HH:mm:ss"
           unlink-panels
           :picker-options="pickerOptions"
-        >
-        </el-date-picker>
+        />
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -36,8 +35,7 @@
           type="primary"
           icon="el-icon-plus"
           @click="addDialogVisible = true"
-          >新增</el-button
-        >
+        >新增</el-button>
       </crudOperation>
       <!--表单组件-->
       <el-dialog
@@ -91,8 +89,7 @@
               clearable
               placeholder="选择日期"
               value-format="yyyy-MM-dd"
-            >
-            </el-date-picker>
+            />
           </el-form-item>
           <el-form-item label="物料" prop="material">
             <el-select
@@ -136,12 +133,16 @@
             />
           </el-form-item>
           <el-form-item label="" prop="">
-            <el-button size="mini" type="primary" @click="addToList"
-              >添加</el-button
-            >
-            <el-button size="mini" type="warning" @click="reset('addForm')"
-              >重置</el-button
-            >
+            <el-button
+              size="mini"
+              type="primary"
+              @click="addToList"
+            >添加</el-button>
+            <el-button
+              size="mini"
+              type="warning"
+              @click="reset('addForm')"
+            >重置</el-button>
           </el-form-item>
         </el-form>
         <div>
@@ -166,19 +167,21 @@
                   size="mini"
                   type="primary"
                   @click="delAddData(scope.row)"
-                  >删除</el-button
-                >
+                >删除</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button type="text" @click="addDialogVisible = false"
-            >取消</el-button
-          >
-          <el-button :loading="loading" type="primary" @click="save"
-            >确认</el-button
-          >
+          <el-button
+            type="text"
+            @click="addDialogVisible = false"
+          >取消</el-button>
+          <el-button
+            :loading="loading"
+            type="primary"
+            @click="save"
+          >确认</el-button>
         </div>
       </el-dialog>
       <!--表格渲染-->
@@ -203,6 +206,11 @@
             {{ scope.row.supplier.name }}
           </template>
         </el-table-column>
+        <el-table-column label="物料明细" width="150px">
+          <template slot-scope="scope">
+            {{ getOrderDetail( scope.row) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="createBy" label="制单人" />
         <el-table-column prop="createTime" label="制单时间" />
         <el-table-column
@@ -214,15 +222,14 @@
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
-              disabledEdit
+              disabled-edit
               :permission="permission"
             >
               <el-button
                 size="mini"
                 type="primary"
                 @click="showDetailDialog(scope.row)"
-                >详情</el-button
-              >
+              >详情</el-button>
             </udOperation>
           </template>
         </el-table-column>
@@ -230,20 +237,20 @@
       <!--分页组件-->
       <pagination />
     </div>
-    <detailDialog ref="detailDialog"></detailDialog>
+    <detailDialog ref="detailDialog" />
   </div>
 </template>
 
 <script>
-import crudStockInOrder from "@/api/inOrder/inOrderManage";
-import { querySupplier, queryMaterial, queryWarehouse } from "@/api/common";
-import CRUD, { presenter, header, form, crud } from "@crud/crud";
-import rrOperation from "@crud/RR.operation";
-import crudOperation from "@crud/CRUD.operation";
-import udOperation from "@crud/UD.operation";
-import pagination from "@crud/Pagination";
-import detailDialog from "./detailDialog.vue";
-import { generateRandom, deepClone, dateFormat } from "@/utils/index";
+import crudStockInOrder from '@/api/inOrder/inOrderManage'
+import { querySupplier, queryMaterial, queryWarehouse } from '@/api/common'
+import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import rrOperation from '@crud/RR.operation'
+import crudOperation from '@crud/CRUD.operation'
+import udOperation from '@crud/UD.operation'
+import pagination from '@crud/Pagination'
+import detailDialog from './detailDialog.vue'
+import { generateRandom, deepClone, dateFormat } from '@/utils/index'
 
 const defaultForm = {
   id: null,
@@ -255,9 +262,9 @@ const defaultForm = {
   updateBy: null,
   updateTime: null,
   deleted: null
-};
+}
 export default {
-  name: "StockInOrder",
+  name: 'StockInOrder',
   components: {
     pagination,
     crudOperation,
@@ -265,161 +272,161 @@ export default {
     udOperation,
     detailDialog
   },
-  dicts: ["unit_of_weight"],
+  dicts: ['unit_of_weight'],
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    let optShow = {
+    const optShow = {
       add: false,
       edit: false,
       del: true,
       download: true,
       reset: true
-    };
+    }
     return CRUD({
       optShow,
-      title: "入库单",
-      url: "api/stockInOrder",
-      idField: "id",
-      sort: "id,desc",
+      title: '入库单',
+      url: 'api/stockInOrder',
+      idField: 'id',
+      sort: 'id,desc',
       crudMethod: { ...crudStockInOrder }
-    });
+    })
   },
   data() {
-    let checkNumber = (rule, value, callback) => {
+    const checkNumber = (rule, value, callback) => {
       if (value && String(value).trim()) {
         if (!/^[0-9]+(.[0-9]+)?$/.test(value)) {
-          callback(new Error("仅限输入数字"));
+          callback(new Error('仅限输入数字'))
         } else {
-          callback();
+          callback()
         }
       } else {
-        callback();
+        callback()
       }
-    };
-    let checkQuantity = (rule, value, callback) => {
+    }
+    const checkQuantity = (rule, value, callback) => {
       if (Number(value) <= 0) {
-        callback(new Error("数量不能小于等于0"));
+        callback(new Error('数量不能小于等于0'))
       } else {
-        callback();
+        callback()
       }
-    };
-    let checkInTime = (rule, value, callback) => {
+    }
+    const checkInTime = (rule, value, callback) => {
       if (new Date(value).getTime() > new Date().getTime()) {
-        callback(new Error("入库时间不能大于今天"));
+        callback(new Error('入库时间不能大于今天'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
 
     return {
       addDialogVisible: false,
       detailDialog: false,
       addData: [],
-      supplierList: [], //供应商列表
-      warehouseList: [], //仓库列表
-      materialList: [], //物料数据
+      supplierList: [], // 供应商列表
+      warehouseList: [], // 仓库列表
+      materialList: [], // 物料数据
       loading: false,
       pickerOptions: this.$store.state.settings.defaultPickerOptions,
       permission: {
-        add: ["admin", "stockInOrder:add"],
-        edit: ["admin", "stockInOrder:edit"],
-        del: ["admin", "stockInOrder:del"]
+        add: ['admin', 'stockInOrder:add'],
+        edit: ['admin', 'stockInOrder:edit'],
+        del: ['admin', 'stockInOrder:del']
       },
       formInline: {
-        material: "", //物料ID
-        materialName: "",
+        material: '', // 物料ID
+        materialName: '',
         quantity: 0,
-        supplier: "", //供应商ID
-        supplierName: "",
-        remark: "",
-        stockInTime: dateFormat(new Date(), "yyyy-MM-dd"), //入库时间
-        warehouse: "", //仓库ID
-        warehouseName: "",
-        unit: ""
+        supplier: '', // 供应商ID
+        supplierName: '',
+        remark: '',
+        stockInTime: dateFormat(new Date(), 'yyyy-MM-dd'), // 入库时间
+        warehouse: '', // 仓库ID
+        warehouseName: '',
+        unit: ''
       },
       rules: {
         stockInTime: [
-          { required: true, message: "入库时间不能为空", trigger: "change" },
-          { required: true, validator: checkInTime, trigger: "change" }
+          { required: true, message: '入库时间不能为空', trigger: 'change' },
+          { required: true, validator: checkInTime, trigger: 'change' }
         ],
 
         supplier: [
-          { required: true, message: "供应商不能为空", trigger: "blur" }
+          { required: true, message: '供应商不能为空', trigger: 'blur' }
         ],
         warehouse: [
-          { required: true, message: "仓库不能为空", trigger: "blur" }
+          { required: true, message: '仓库不能为空', trigger: 'blur' }
         ],
         material: [
-          { required: true, message: "物料不能为空", trigger: "blur" }
+          { required: true, message: '物料不能为空', trigger: 'blur' }
         ],
         quantity: [
-          { required: true, message: "数量不能为空", trigger: "blur" },
-          { required: true, validator: checkNumber, trigger: "blur" },
-          { required: true, validator: checkQuantity, trigger: "blur" }
+          { required: true, message: '数量不能为空', trigger: 'blur' },
+          { required: true, validator: checkNumber, trigger: 'blur' },
+          { required: true, validator: checkQuantity, trigger: 'blur' }
         ],
-        unit: [{ required: true, message: "单位不能为空", trigger: "blur" }]
+        unit: [{ required: true, message: '单位不能为空', trigger: 'blur' }]
       },
-      queryTypeOptions: [{ key: "id", display_name: "入库单号" }]
-    };
+      queryTypeOptions: [{ key: 'id', display_name: '入库单号' }]
+    }
   },
   watch: {
-    "dict.unit_of_weight": {
+    'dict.unit_of_weight': {
       handler(val) {
         if (val && val.length) {
-          this.formInline.unit = val[0].value;
+          this.formInline.unit = val[0].value
         }
       },
       immediate: true
     }
   },
   mounted() {
-    let params = {
+    const params = {
       page: 0,
       size: 100
-    };
+    }
     querySupplier(params).then(res => {
-      this.supplierList = res.content;
+      this.supplierList = res.content
       if (this.supplierList.length) {
-        this.formInline.supplier = this.supplierList[0].id;
+        this.formInline.supplier = this.supplierList[0].id
       }
-    });
+    })
     queryMaterial(params).then(res => {
-      this.materialList = res.content;
+      this.materialList = res.content
       if (this.materialList.length) {
-        this.formInline.material = this.materialList[0].id;
+        this.formInline.material = this.materialList[0].id
       }
-    });
+    })
     queryWarehouse(params).then(res => {
-      this.warehouseList = res.content;
+      this.warehouseList = res.content
       if (this.warehouseList.length) {
-        this.formInline.warehouse = this.warehouseList[0].id;
+        this.formInline.warehouse = this.warehouseList[0].id
       }
-    });
+    })
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
-      return true;
+      return true
     },
     showDetailDialog(data = {}) {
-      this.$refs.detailDialog.showDialog(data.orderItems);
+      this.$refs.detailDialog.showDialog(data.orderItems)
     },
     reset(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     save() {
       if (!this.addData.length) {
-        this.$message.warning("请先添加数据");
-        return;
+        this.$message.warning('请先添加数据')
+        return
       }
-      this.$confirm("确定要保存数据吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确定要保存数据吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.loading = true;
-        let firstEle = this.addData[0];
-        let submitData = {
+        this.loading = true
+        const firstEle = this.addData[0]
+        const submitData = {
           id: new Date().getTime(),
           stockInTime: firstEle.stockInTime,
           orderItems: [],
@@ -429,76 +436,87 @@ export default {
           warehouse: {
             id: firstEle.warehouse
           }
-        };
-        submitData.orderItems = deepClone(this.addData) || []; //入库单下的物料
+        }
+        submitData.orderItems = deepClone(this.addData) || [] // 入库单下的物料
         submitData.orderItems.forEach(item => {
           item.material = {
             id: item.material
-          };
-        });
+          }
+        })
         crudStockInOrder
           .add(submitData)
           .then(res => {
-            this.loading = false;
-            this.addData = [];
-            this.crud.refresh();
-            this.addDialogVisible = false;
+            this.loading = false
+            this.addData = []
+            this.crud.refresh()
+            this.addDialogVisible = false
           })
           .catch(() => {
-            this.loading = false;
-            this.addDialogVisible = false;
-          });
-      });
+            this.loading = false
+            this.addDialogVisible = false
+          })
+      })
     },
     addToList(data) {
-      this.$refs["addForm"].validate(valid => {
+      this.$refs['addForm'].validate(valid => {
         if (valid) {
-          let warehouseItem = this.warehouseList.find(
+          const warehouseItem = this.warehouseList.find(
             item => item.id == this.formInline.warehouse
-          );
-          let materialItem = this.materialList.find(
+          )
+          const materialItem = this.materialList.find(
             item => item.id == this.formInline.material
-          );
-          let supplierItem = this.supplierList.find(
+          )
+          const supplierItem = this.supplierList.find(
             item => item.id == this.formInline.supplier
-          );
+          )
 
-          //禁止重复添加相同得物料
-          let isAddSameMaterial = false;
+          // 禁止重复添加相同得物料
+          let isAddSameMaterial = false
           this.addData.forEach(item => {
             if (this.formInline.material == item.material) {
-              isAddSameMaterial = true;
+              isAddSameMaterial = true
             }
-          });
+          })
           if (isAddSameMaterial) {
-            this.$message.warning("已添加过该物料，如需添加请先删除");
-            return;
+            this.$message.warning('已添加过该物料，如需添加请先删除')
+            return
           }
-          let stockInTimeArr = this.addData.map(item => {
-            return item.stockInTime;
-          });
-          stockInTimeArr.push(this.formInline.stockInTime);
+          const stockInTimeArr = this.addData.map(item => {
+            return item.stockInTime
+          })
+          stockInTimeArr.push(this.formInline.stockInTime)
           if (new Set(stockInTimeArr).size > 1) {
-            this.$message.warning("物料的入库时间必须一致");
-            return;
+            this.$message.warning('物料的入库时间必须一致')
+            return
           }
 
-          this.formInline.materialName = materialItem.name;
-          this.formInline.warehouseName = warehouseItem.name;
-          this.formInline.supplierName = supplierItem.name;
-          this.formInline.randomId = generateRandom();
-          this.addData.push(Object.assign({}, this.formInline));
+          this.formInline.materialName = materialItem.name
+          this.formInline.warehouseName = warehouseItem.name
+          this.formInline.supplierName = supplierItem.name
+          this.formInline.randomId = generateRandom()
+          this.addData.push(Object.assign({}, this.formInline))
         }
-      });
+      })
     },
     delAddData(data) {
-      console.log(data);
+      console.log(data)
       this.addData = this.addData.filter(item => {
-        return item.randomId != data.randomId;
-      });
+        return item.randomId != data.randomId
+      })
+    },
+    getOrderDetail(data = {}) {
+      let str = '';
+      (data.orderItems || []).forEach((item, index) => {
+        let temp = item.material.name + '-' + item.quantity
+        if (index < data.orderItems.length - 1) {
+          temp += ','
+        }
+        str += temp + '\n'
+      })
+      return str
     }
   }
-};
+}
 </script>
 
 <style scoped></style>
