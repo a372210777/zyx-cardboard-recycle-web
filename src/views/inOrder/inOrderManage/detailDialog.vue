@@ -28,46 +28,48 @@
         </el-table>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false"
-            >确 定</el-button
-          >
+          <el-button
+            type="primary"
+            @click="dialogVisible = false"
+          >确 定</el-button>
         </span>
       </el-dialog>
     </div>
   </div>
 </template>
 <script>
+
 export default {
-  name: "StockInOrderItem",
+  name: 'StockInOrderItem',
   components: {},
   data() {
     return {
       dialogVisible: false,
       orderItems: [],
       permission: {
-        add: ["admin", "stockInOrderItem:add"],
-        edit: ["admin", "stockInOrderItem:edit"],
-        del: ["admin", "stockInOrderItem:del"]
+        add: ['admin', 'stockInOrderItem:add'],
+        edit: ['admin', 'stockInOrderItem:edit'],
+        del: ['admin', 'stockInOrderItem:del']
       }
-    };
+    }
   },
   methods: {
     showDialog(data = []) {
-      this.dialogVisible = true;
-      this.orderItems = data;
+      this.dialogVisible = true
+      this.orderItems = data
       this.orderItems.forEach(element => {
-        element.materialName = element.material.name;
-      });
+        element.materialName = element.material.name
+      })
     },
     hideDialog() {
-      this.dialogVisible = false;
-      this.orderItems = [];
+      this.dialogVisible = false
+      this.orderItems = []
     },
     calcuteTotal(row) {
-      return (row.quantity * row.unitPrice).toFixed(3);
+      return (row.quantity * row.unitPrice).toFixed(3)
     }
   }
-};
+}
 </script>
 
 <style scoped></style>

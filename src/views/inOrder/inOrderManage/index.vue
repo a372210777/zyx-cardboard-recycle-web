@@ -38,48 +38,16 @@
         >新增</el-button>
       </crudOperation>
       <!--表单组件-->
-      <el-dialog
-        :close-on-click-modal="false"
-        :visible.sync="addDialogVisible"
-        width="900px"
-        title="新增"
-      >
-        <el-form
-          ref="addForm"
-          :model="formInline"
-          :rules="rules"
-          size="small"
-          :inline="true"
-          label-width="80px"
-        >
+      <el-dialog :close-on-click-modal="false" :visible.sync="addDialogVisible" width="900px" title="新增">
+        <el-form ref="addForm" :model="formInline" :rules="rules" size="small" :inline="true" label-width="80px">
           <el-form-item label="接收仓库" prop="warehouse">
-            <el-select
-              v-model="formInline.warehouse"
-              clearable
-              filterable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in warehouseList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
+            <el-select v-model="formInline.warehouse" clearable filterable placeholder="请选择">
+              <el-option v-for="item in warehouseList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="供应商" prop="supplier">
-            <el-select
-              v-model="formInline.supplier"
-              clearable
-              filterable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in supplierList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
+            <el-select v-model="formInline.supplier" clearable filterable placeholder="请选择">
+              <el-option v-for="item in supplierList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="入库时间" prop="stockInTime">
@@ -92,66 +60,28 @@
             />
           </el-form-item>
           <el-form-item label="物料" prop="material">
-            <el-select
-              v-model="formInline.material"
-              clearable
-              filterable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in materialList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
+            <el-select v-model="formInline.material" clearable filterable placeholder="请选择">
+              <el-option v-for="item in materialList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="数量" prop="quantity">
             <el-input v-model="formInline.quantity" />
           </el-form-item>
           <el-form-item label="单位" prop="unit">
-            <el-select
-              v-model="formInline.unit"
-              clearable
-              filterable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in dict.unit_of_weight"
-                :key="item.id"
-                :label="item.label"
-                :value="item.value"
-              />
+            <el-select v-model="formInline.unit" clearable filterable placeholder="请选择">
+              <el-option v-for="item in dict.unit_of_weight" :key="item.id" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
           <el-form-item label="备注" prop="remark">
-            <el-input
-              v-model="formInline.remark"
-              type="textarea"
-              maxlength="500"
-              placeholder="请输入"
-            />
+            <el-input v-model="formInline.remark" type="textarea" maxlength="500" placeholder="请输入" />
           </el-form-item>
           <el-form-item label="" prop="">
-            <el-button
-              size="mini"
-              type="primary"
-              @click="addToList"
-            >添加</el-button>
-            <el-button
-              size="mini"
-              type="warning"
-              @click="reset('addForm')"
-            >重置</el-button>
+            <el-button size="mini" type="primary" @click="addToList">添加</el-button>
+            <el-button size="mini" type="warning" @click="reset('addForm')">重置</el-button>
           </el-form-item>
         </el-form>
         <div>
-          <el-table
-            ref="table"
-            :data="addData"
-            size="small"
-            style="width: 100%;"
-          >
+          <el-table ref="table" :data="addData" size="small" style="width: 100%;">
             <el-table-column type="selection" width="55" />
             <el-table-column prop="materialName" label="物料名称" />
             <el-table-column label="数量" prop="quantity" />
@@ -163,25 +93,14 @@
             <el-table-column prop="remark" label="备注" />
             <el-table-column label="操作" width="100px" align="center">
               <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="delAddData(scope.row)"
-                >删除</el-button>
+                <el-button size="mini" type="primary" @click="delAddData(scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button
-            type="text"
-            @click="addDialogVisible = false"
-          >取消</el-button>
-          <el-button
-            :loading="loading"
-            type="primary"
-            @click="save"
-          >确认</el-button>
+          <el-button type="text" @click="addDialogVisible = false">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="save">确认</el-button>
         </div>
       </el-dialog>
       <!--表格渲染-->
@@ -208,7 +127,7 @@
         </el-table-column>
         <el-table-column label="物料明细" width="150px">
           <template slot-scope="scope">
-            {{ getOrderDetail( scope.row) }}
+            {{ getOrderDetail(scope.row) }}
           </template>
         </el-table-column>
         <el-table-column prop="createBy" label="制单人" />
@@ -216,20 +135,13 @@
         <el-table-column
           v-if="checkPer(['admin', 'stockInOrder:edit', 'stockInOrder:del'])"
           label="操作"
-          width="180px"
+          width="200px"
           align="center"
         >
           <template slot-scope="scope">
-            <udOperation
-              :data="scope.row"
-              disabled-edit
-              :permission="permission"
-            >
-              <el-button
-                size="mini"
-                type="primary"
-                @click="showDetailDialog(scope.row)"
-              >详情</el-button>
+            <udOperation :data="scope.row" disabled-edit :show-edit="false" :permission="permission">
+              <el-button size="mini" type="primary" @click="showDetailDialog(scope.row)">详情</el-button>
+              <el-button size="mini" type="primary" @click="showEditDialog(scope.row)">编辑</el-button>
             </udOperation>
           </template>
         </el-table-column>
@@ -238,6 +150,7 @@
       <pagination />
     </div>
     <detailDialog ref="detailDialog" />
+    <editDialog ref="editDialog" />
   </div>
 </template>
 
@@ -250,6 +163,7 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import detailDialog from './detailDialog.vue'
+import editDialog from './editDialog.vue'
 import { generateRandom, deepClone, dateFormat } from '@/utils/index'
 
 const defaultForm = {
@@ -270,7 +184,8 @@ export default {
     crudOperation,
     rrOperation,
     udOperation,
-    detailDialog
+    detailDialog,
+    editDialog
   },
   dicts: ['unit_of_weight'],
   mixins: [presenter(), header(), form(defaultForm), crud()],
@@ -410,6 +325,17 @@ export default {
     },
     showDetailDialog(data = {}) {
       this.$refs.detailDialog.showDialog(data.orderItems)
+    },
+    showEditDialog(data = {}) {
+      const temp = deepClone(data.orderItems)
+      temp.forEach((item) => {
+        if (!item.hasOwnProperty('isEdit')) {
+          this.$set(item, 'isEdit', false)
+        }
+        this.$set(item, 'tempMaterialId', item.material.id)
+      })
+      console.log(data)
+      this.$refs.editDialog.showDialog(temp, data)
     },
     reset(formName) {
       this.$refs[formName].resetFields()
