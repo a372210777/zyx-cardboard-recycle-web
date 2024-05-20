@@ -5,32 +5,12 @@
       <div>
         <!-- 搜索 -->
         <label class="el-form-item-label">仓库</label>
-        <el-select
-          v-model="form.stockId"
-          clearable
-          filterable
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in warehouseList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
+        <el-select v-model="form.stockId" clearable filterable placeholder="请选择">
+          <el-option v-for="item in warehouseList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
         <label class="el-form-item-label">物料</label>
-        <el-select
-          v-model="form.materialId"
-          clearable
-          filterable
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in materialList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
+        <el-select v-model="form.materialId" clearable filterable multiple placeholder="请选择">
+          <el-option v-for="item in materialList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
         <!-- <label class="el-form-item-label">物料类别</label>
           <el-select
@@ -47,42 +27,21 @@
             />
           </el-select> -->
         <label class="el-form-item-label">统计日期</label>
-        <el-date-picker
-          v-model="form.dateTime"
-          type="date"
-          placeholder="选择日期"
-          :picker-options="pickerOptions"
-          @change="dateChange"
-        />
+        <el-date-picker v-model="form.dateTime" type="date" placeholder="选择日期" :picker-options="pickerOptions"
+          @change="dateChange" />
 
         <div>
           <span>
-            <el-button
-              class="filter-item"
-              size="mini"
-              type="success"
-              icon="el-icon-search"
-              @click="queryData"
-            >搜索</el-button>
-            <el-button
-              class="filter-item"
-              size="mini"
-              type="warning"
-              icon="el-icon-refresh-left"
-              @click="reset"
-            >重置</el-button>
+            <el-button class="filter-item" size="mini" type="success" icon="el-icon-search"
+              @click="queryData">搜索</el-button>
+            <el-button class="filter-item" size="mini" type="warning" icon="el-icon-refresh-left"
+              @click="reset">重置</el-button>
           </span>
         </div>
       </div>
       <!--表格渲染-->
-      <el-table
-        ref="table"
-        v-loading="loading"
-        :data="tableData"
-        size="small"
-        style="width: 100%;margin-top:20px"
-        :max-height="$store.state.settings.maxTableHeight"
-      >
+      <el-table ref="table" v-loading="loading" :data="tableData" size="small" style="width: 100%;margin-top:20px"
+        :max-height="$store.state.settings.maxTableHeight">
         <el-table-column prop="dateTime" label="日期" />
         <el-table-column prop="stockName" label="仓库" />
         <el-table-column prop="materialName" label="物料" />
@@ -95,16 +54,10 @@
 
       </el-table>
       <!--分页组件-->
-      <el-pagination
-        :current-page.sync="page.pageNumber"
-        style="margin-top: 8px;"
-        :page-sizes="[10, 20, 30, 40, 50, 100, 200, 500]"
-        :page-size="page.pageSize"
-        layout="total, prev, pager, next, sizes"
-        :total="page.total"
-        @size-change="sizeChangeHandler"
-        @current-change="pageChangeHandler"
-      />
+      <el-pagination :current-page.sync="page.pageNumber" style="margin-top: 8px;"
+        :page-sizes="[10, 20, 30, 40, 50, 100, 200, 500]" :page-size="page.pageSize"
+        layout="total, prev, pager, next, sizes" :total="page.total" @size-change="sizeChangeHandler"
+        @current-change="pageChangeHandler" />
     </div>
   </div>
 </template>
@@ -207,13 +160,15 @@ export default {
     queryMaterial(params).then(res => {
       this.materialList = res.content
       if (this.materialList.length) {
-        this.form.materialId = this.materialList[0].id
+        // this.form.materialId = this.materialList[0].id
       }
     })
     queryWarehouse(params).then(res => {
       this.warehouseList = res.content
       if (this.warehouseList.length) {
         this.form.stockId = this.warehouseList[0].id
+
+        this.queryData();
       }
     })
   },
@@ -234,16 +189,11 @@ export default {
       param.pageSize = this.page.pageSize
       param.pageNumber = this.page.pageNumber
       param.dateTime = param.dateTime + ' 23:59:59'
-      console.log(param)
+      param.materialId = param.materialId.length ? param.materialId.join(",") : "";
       this.tableData = []
       queryStockList(param)
         .then(res => {
-          console.log('test===', res)
-
-          if (res.materialId) {
-            this.tableData.push(res)
-          }
-          // this.page.total = res.totalElements;
+          this.tableData = res;
           this.loading = false
         })
         .catch(() => {
@@ -275,4 +225,4 @@ export default {
 }
 </script>
 
-  <style scoped></style>
+<style scoped></style>
