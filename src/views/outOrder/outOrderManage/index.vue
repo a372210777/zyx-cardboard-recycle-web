@@ -253,6 +253,9 @@ export default {
     }
     queryWarehouse(params).then(res => {
       this.warehouseList = res.content || []
+      if (this.warehouseList.length) {
+        this.query.warehouseId = this.warehouseList[0].id
+      }
     })
   },
   methods: {
